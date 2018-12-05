@@ -7,9 +7,12 @@
 
 <script>
 import d3 from '@/assets/js/d3';
+import chartElement from '@/mixins/chartElement'
+
 
 export default {
   name: 'Axis',
+  mixins: [chartElement],
   props: {
     translate: {
       type: String,

@@ -1,4 +1,6 @@
-const resizeCallback = (newValue, oldValue) => newValue !== oldValue && this.update();
+function resizeCallback(newValue, oldValue) {
+  return newValue !== oldValue && this.update();
+}
 
 export default {
   props: {
@@ -25,7 +27,9 @@ export default {
   watch: {
     width: resizeCallback,
     height: resizeCallback,
-    data: () => this.update(),
+    data() {
+      this.update();
+    },
   },
   methods: {
     update() {

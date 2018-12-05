@@ -6,9 +6,11 @@
 
 <script>
 import d3 from '@/assets/js/d3';
+import chartElement from '@/mixins/chartElement'
 
 export default {
   name: 'ChartLine',
+  mixins: [chartElement],
   props: {
     data: {
       type: Array,
@@ -35,6 +37,7 @@ export default {
   data() {
     return {
       scale: d3.line(),
+      line: null,
     };
   },
   watch: {
@@ -42,11 +45,9 @@ export default {
       this.render();
     },
   },
-  mounted() {
-    if (this.data) {
-      this.render();
-    }
-  },
+  // mounted() {
+  //   this.setup();
+  // },
   methods: {
     setup() {
       this.line = d3.select(this.$refs.root)

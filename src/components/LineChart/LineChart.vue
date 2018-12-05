@@ -3,10 +3,7 @@
     :width="width"
     :height="height"
   >
-    <g
-      v-if="ready"
-      ref="wrapper"
-    >
+    <g>
       <slot
         :data="data"
         :scaleX="scaleX"
@@ -56,7 +53,6 @@ export default {
     return {
       scaleX: d3[this.scaleXType](),
       scaleY: d3[this.scaleYType](),
-      ready: true,
     };
   },
   computed: {
@@ -83,12 +79,17 @@ export default {
   },
   methods: {
     setupScales() {
+      const {
+        left,
+        top,
+      } = this.margin;
       this.scaleX
-        .range([0, this.chartWidth])
-        .domain(d3.extent(this.data, d => d[this.propertyX]));
+        .domain(d3.extent(this.data, d => d[this.propertyX]))
+        .range([left, this.chartWidth]);
       this.scaleY
-        .range([this.chartHeight, 0])
-        .domain(d3.extent(this.data, d => d[this.propertyY])).nice();
+        .domain(d3.extent(this.data, d => d[this.propertyY])).nice()
+        .range([this.chartHeight, top]);
+
     },
     render() {
       this.setupScales();

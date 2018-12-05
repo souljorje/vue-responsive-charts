@@ -1,14 +1,14 @@
 <template>
-  <ResponsiveWrapper :class="$style.wrapper">
+  <ResponsiveWrapper class="wrapper">
     <LineChart
-      slot-scope="{ parentWidth, parentHeight }"
-      :width="parentWidth"
-      :height="parentHeight"
+      slot-scope="parent"
+      :width="parent.width"
+      :height="parent.height"
       :margin="{
-        top: 0,
+        top: 30,
         bottom: 20,
         right: 0,
-        left: 0,
+        left: 20,
       }"
       :data="fullData"
       property-x="dateTime"
@@ -22,6 +22,7 @@
           chartWidth,
           propertyX,
           propertyY,
+          margin,
         }"
       >
         <g>
@@ -29,24 +30,18 @@
             :scale="scaleX"
             :translate="`0, ${chartHeight}`"
             :ticks="6"
-            :tick-format="multiFormat"
-            :class="$style.axisX"
             position="Bottom"
           />
           <ChartAxis
             :scale="scaleY"
-            :callback="(element, config) => createAxisY(element, config, chartHeight)"
-            :tick-format="formatTicksY"
+            :translate="`${margin.left}, 0`"
             :ticks="6"
-            :tick-size="[chartWidth, chartWidth]"
-            :class="$style.axisY"
             position="Right"
           />
         </g>
         <ChartLine
-          v-for="dataItem in data"
-          :id="dataItem.id"
-          :key="dataItem.id"
+          v-for="(dataItem, index) in data"
+          :key="index"
           :scale-x="scaleX"
           :scale-y="scaleY"
           :data="dataItem"
@@ -60,13 +55,13 @@
 
 <script>
 import d3, { multiFormat } from '@/assets/js/d3';
-import ResponsiveWrapper from '@/components/AppChart/ResponsiveWrapper';
+import ResponsiveWrapper from '@/components/ResponsiveWrapper';
 import LineChart from '@/components/LineChart/LineChart';
 import ChartAxis from '@/components/ChartElements/ChartAxis';
 import ChartLine from '@/components/ChartElements/ChartLine';
 
 export default {
-  name: 'YeldChart',
+  name: 'FinanceChart',
   components: {
     ResponsiveWrapper,
     LineChart,
@@ -82,7 +77,6 @@ export default {
   data() {
     return {
       fullData: [],
-      multiFormat,
     };
   },
   watch: {
@@ -104,31 +98,11 @@ export default {
         return merged;
       }, []);
     },
-    createAxisY(element, config, chartHeight) {
-      element.call(config);
-      element.select('.domain').remove();
-      const axisNode = element.node();
-      const tickNodes = axisNode.querySelectorAll('.tick');
-      const ticksInterval = chartHeight / tickNodes.length;
-      let interval = ticksInterval * tickNodes.length;
-      element.selectAll('.tick')
-        .each((d, i, nodes) => {
-          const tick = d3.select(nodes[i]);
-          tick.attr('transform', `translate(0, ${interval})`);
-          interval -= ticksInterval;
-        });
-      element.selectAll('.tick text')
-        .attr('dy', -8)
-        .attr('dx', -16)
-        .style('text-anchor', 'end');
-    },
-    /* TODO: replace % with prop */
-    formatTicksY(d, i, nodes) {
-      if (i === nodes.length - 1) {
-        return '%';
-      }
-      return d;
-    },
   },
 };
 </script>
+
+<style lang="stylus">
+.wrapper
+  height 450px
+</style>
